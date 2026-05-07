@@ -46,7 +46,11 @@ read SYSTEMTYPE
 if [ "$SYSTEMTYPE" = "B" ]; then
     sleep 1
     echo "damn that's old, you have a BIOS machine"
-    echo -e "label: dos\n, 2G, 82\n, , 83, *" | sfdisk "$DISK"
+    PARTITION_LAYOUT="label: dos
+    size=2G, type=82
+    size=+, type=83, bootable"
+    echo "$PARTITION_LAYOUT" | sfdisk "$DISK"
+
     PART1=$(lsblk -nxo NAME "$DISK" | sed -n '1p' | awk '{print "/dev/" $1}')
     PART2=$(lsblk -nxo NAME "$DISK" | sed -n '2p' | awk '{print "/dev/" $1}')
     mkswap "$PART1"

@@ -45,10 +45,10 @@ echo "we will now be partitioning. will this be a BIOS or UEFI machine? :0 (B/U)
 read SYSTEMTYPE
 if [ "$SYSTEMTYPE" = "B" ]; then
     sfdisk "$DISK" <<EOF
-    label: dos
-    size=2G, type=82
-    type=83
-    EOF
+label: dos
+size=2G, type=82
+type=83
+EOF
     SWAP_PART="${DISK}1"
     [[ "$DISK" == *nvme* ]] && SWAP_PART="${DISK}p1"
     mkswap "$SWAP_PART"

@@ -3,9 +3,7 @@ oh dear use my bad arch installation script
 
 to use, when you get into your arch installation, connect to the internet, and run these commands:
 
-pacman -Sy
-
-pacman -S git
+pacman -Sy git
 
 git clone https://github.com/xephyr-h4tagSh/goofy-archinstallation-script/
 

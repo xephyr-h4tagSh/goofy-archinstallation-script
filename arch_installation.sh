@@ -143,6 +143,7 @@ echo "LANG=en_UK.UTF-8" >> /etc/locale.conf
 echo "think its done gng"
 sleep 1
 
+exit
 umount -R /mnt
 echo "rebooting in 10 seconds"
 sleep 10

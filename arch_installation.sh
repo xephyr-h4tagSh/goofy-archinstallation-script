@@ -9,7 +9,7 @@ echo "oh and this should only be used in the arch installation environment"
 sleep 2
 echo "im locking in now good luck but FIRST"
 lsblk
-echo "what disk should i install it on? "
+echo "what disk should i install it on? (enter it as /dev/sda or like /dev/nvme0n1, so if the list said sdb and you wanted to install it there you input /dev/sdb)"
 read DISK
 
 if [ -b "$DISK" ]; then

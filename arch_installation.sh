@@ -44,20 +44,15 @@ sleep 0.5
 echo "we will now be partitioning. will this be a BIOS or UEFI machine? :0 (B/U)"
 read SYSTEMTYPE
 if [ "$SYSTEMTYPE" = "B" ]; then
-    sleep 1
-    echo "damn that's old, you have a BIOS machine"
-    PARTITION_LAYOUT="label: dos
+    sfdisk "$DISK" <<EOF
+    label: dos
     size=2G, type=82
-    size=+, type=83, bootable"
-    echo "$PARTITION_LAYOUT" | sfdisk "$DISK"
-
-    PART1=$(lsblk -nxo NAME "$DISK" | sed -n '1p' | awk '{print "/dev/" $1}')
-    PART2=$(lsblk -nxo NAME "$DISK" | sed -n '2p' | awk '{print "/dev/" $1}')
-    mkswap "$PART1"
-    swapon "$PART1"
-    mkfs.ext4 "$PART2"
-    mount "$PART2" /mnt
-    
+    type=83
+    EOF
+    SWAP_PART="${DISK}1"
+    [[ "$DISK" == *nvme* ]] && SWAP_PART="${DISK}p1"
+    mkswap "$SWAP_PART"
+    swapon "$SWAP_PART"
     echo "yay i finished partitioning formatting and mounting :0"
 elif [ "$SYSTEMTYPE" = "U" ]; then
     sleep 1

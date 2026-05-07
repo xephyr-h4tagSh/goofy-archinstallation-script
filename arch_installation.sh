@@ -49,10 +49,14 @@ label: dos
 size=2G, type=82
 type=83
 EOF
-    SWAP_PART="${DISK}1"
-    [[ "$DISK" == *nvme* ]] && SWAP_PART="${DISK}p1"
+    P_PREFIX=""
+    [[ "$DISK" == *nvme* ]] && P_PREFIX="p"
+    SWAP_PART="${DISK}${P_PREFIX}1"
+    ROOT_PART="${DISK}${P_PREFIX}2"
     mkswap "$SWAP_PART"
     swapon "$SWAP_PART"
+    mkfs.ext4 "$ROOT_PART"
+    mount "$ROOT_PART" /mnt
     echo "yay i finished partitioning formatting and mounting :0"
 elif [ "$SYSTEMTYPE" = "U" ]; then
     sleep 1

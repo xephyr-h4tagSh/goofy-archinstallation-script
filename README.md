@@ -10,3 +10,5 @@ git clone https://github.com/xephyr-h4tagSh/goofy-archinstallation-script/
 cd goofy-archinstallation-script
 
 chmod +x arch_installation.sh
+
+./arch_installation.sh

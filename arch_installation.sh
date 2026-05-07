@@ -69,6 +69,12 @@ elif [ "$SYSTEMTYPE" = "U" ]; then
     mount "$PART2" /mnt
     mkdir -p /mnt/boot/efi
     mount "$PART1" /mnt/boot/efi
+    echo "oh yes i need to enable the swap on uefi first :0"
+    sleep 1
+    fallocate -l 4G /mnt/swapfile
+    chmod 600 /mnt/swapfile
+    mkswap /mnt/swapfile
+    swapon /mnt/swapfile
     echo "yay i finished partitioning formatting and mounting. :3"
 else
     echo "enter a valid system type next time. you were supposed to enter B or U. >:("
@@ -80,12 +86,6 @@ sleep 2
 echo "ok im gonna install you some packages. linux-zen, base, linux-firmware, and if you are UEFI then efibootmgr"
 sleep 1
 if [ "$SYSTEMTYPE" = "U" ]; then
-    echo "oh yes i need to enable the swap on uefi first :0"
-    sleep 1
-    fallocate -l 4G /mnt/swapfile
-    chmod 600 /mnt/swapfile
-    mkswap /mnt/swapfile
-    swapon /mnt/swapfile
     pacstrap -K /mnt linux-zen linux-firmware base efibootmgr
 else
     pacstrap -K /mnt linux-zen linux-firmware base
@@ -101,12 +101,13 @@ echo "ok im gonna chroot into your new machine :0"
 sleep 1
 
 arch-chroot /mnt <<EOF
-echo "setting root password..."
-passwd
-echo "what will your username be?"
+echo "what will your password be?: "
+read PASSWD
+passwd $PASSWD
+echo "what will your username be?: "
 read USERNAME
 useradd -m -G wheel \$USERNAME
-echo "and what will your user password be?"
+echo "and what will your user password be?: "
 read USRPASSWD
 passwd $USERNAME $USRPASSWD
 sleep 1
@@ -133,12 +134,11 @@ sleep 0.5
 echo "ill finish off for you"
 
 pacman -S --noconfirm networkmanager intel-ucode amd-ucode
-systemctl enable NetworkManager
-sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
+systemctl enable networkmanager
 echo "archlinux" > /etc/hostname
 echo "en_UK.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen
-echo "LANG=en_UK.UTF-8" > /etc/locale.conf
+echo "LANG=en_UK.UTF-8" >> /etc/locale.conf
 
 echo "think its done gng"
 sleep 1

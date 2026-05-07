@@ -8,6 +8,7 @@ sleep 1
 echo "oh and this should only be used in the arch installation environment"
 sleep 2
 echo "im locking in now good luck but FIRST"
+lsblk
 echo "what disk should i install it on? "
 read DISK
 

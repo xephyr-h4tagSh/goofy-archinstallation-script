@@ -7,8 +7,8 @@ echo "just a quick warning: i made this for fun, if you don't want your disk to 
 sleep 1
 echo "oh and this should only be used in the arch installation environment"
 sleep 2
-echo "im locking in now good luck but FIRST"
 lsblk
+sleep 1
 echo "what disk should i install it on? (enter it as /dev/sda or like /dev/nvme0n1, so if the list said sdb and you wanted to install it there you input /dev/sdb)"
 read DISK
 
@@ -65,7 +65,7 @@ elif [ "$SYSTEMTYPE" = "U" ]; then
     mount "$PART2" /mnt
     mkdir -p /mnt/boot/efi
     mount "$PART1" /mnt/boot/efi
-    echo "yay i finished formatting and mounting."
+    echo "yay i finished partitioning formatting and mounting. :3"
 else
     echo "enter a valid system type next time. you were supposed to enter B or U. >:("
     sleep 2
@@ -137,7 +137,8 @@ locale-gen
 echo "LANG=en_UK.UTF-8" > /etc/locale.conf
 
 echo "think its done gng"
-exit 
+sleep 1
+
 umount -R /mnt
 echo "rebooting in 10 seconds"
 sleep 10

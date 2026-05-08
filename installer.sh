@@ -75,7 +75,7 @@ if [ "$SYSTEMTYPE" == "U" ]; then
 fi
 
 # Install Base System
-pacstrap -K /mnt base linux-zen linux-firmware grub networkmanager nano
+pacstrap -K /mnt base linux-lts linux-lts-headers linux-firmware grub networkmanager nano
 [[ "$SYSTEMTYPE" == "U" ]] && pacstrap -K /mnt efibootmgr
 
 genfstab -U /mnt >> /mnt/etc/fstab

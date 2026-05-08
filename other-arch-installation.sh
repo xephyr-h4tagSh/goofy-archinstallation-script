@@ -81,9 +81,9 @@ pacstrap -K /mnt base linux-zen linux-firmware grub networkmanager nano
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Get info before entering chroot
-read -p "Set root password: " PASSWD
-read -p "New username: " USERNAME
-read -p "Set password for $USERNAME: " USRPASSWD
+read -p "set your root password :3 : " PASSWD
+read -p "your new username: " USERNAME
+read -p "and set the password for $USERNAME :0 : " USRPASSWD
 
 # Config inside chroot
 arch-chroot /mnt /bin/bash <<EOF

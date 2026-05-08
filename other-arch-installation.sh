@@ -3,15 +3,15 @@
 
 set -e # Exit immediately if any command fails
 
-echo "Starting Arch install gang..."
+echo "starting arch install gng..."
 sleep 1
-
+echo "im locking in"
 lsblk
 echo ""
-read -p "What disk should I install it on? (e.g., /dev/sda): " DISK
+read -p "what disk should I install it on? (e.g., /dev/sda) >:3: " DISK
 
 if [ -b "$DISK" ]; then
-    read -p "Confirm erasing $DISK? (y/Y to proceed): " CONFIRMATION
+    read -p "confirm my dumbass to erase $DISK? (y or Y to proceed): " CONFIRMATION
     if [[ ! $CONFIRMATION =~ ^[yY]$ ]]; then
         echo "Aborting."
         exit 1
@@ -22,7 +22,7 @@ if [ -b "$DISK" ]; then
     sgdisk --zap-all "$DISK"
     partprobe "$DISK"
 else
-    echo "Invalid disk. Aborting."
+    echo "invalid disk tut tut tut. aborting >:*(."
     exit 1
 fi
 
@@ -64,7 +64,7 @@ mount "$ROOT_PART" /mnt
 
 # Check if mount actually worked
 if ! mountpoint -q /mnt; then
-    echo "ERROR: /mnt is not a mountpoint! Check your disk."
+    echo "hey uh: /mnt is not a mountpoint! Check your disk."
     exit 1
 fi
 
@@ -106,6 +106,6 @@ fi
 grub-mkconfig -o /boot/grub/grub.cfg
 EOF
 
-echo "Install finished. Unmounting..."
+echo "installation finished :0000! unmounting..."
 umount -R /mnt
-echo "Done! Type 'reboot' to start your new system."
+echo "i have completed thy assignment. type 'reboot' to start the new install :3."

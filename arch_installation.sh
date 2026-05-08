@@ -103,13 +103,15 @@ sleep 1
 arch-chroot /mnt <<EOF
 echo "what will your password be?: "
 read PASSWD
-passwd $PASSWD
+passwd
+$PASSWD
 echo "what will your username be?: "
 read USERNAME
 useradd -m -G wheel \$USERNAME
 echo "and what will your user password be?: "
 read USRPASSWD
-passwd $USERNAME $USRPASSWD
+passwd $USERNAME
+$USRPASSWD
 sleep 1
 echo "ok that should be your root passwd, and username and its passwd done."
 EOF
@@ -134,11 +136,11 @@ sleep 0.5
 echo "ill finish off for you"
 
 pacman -S --noconfirm networkmanager intel-ucode amd-ucode
-systemctl enable networkmanager
+systemctl enable NetworkManager
 echo "archlinux" > /etc/hostname
-echo "en_UK.UTF-8 UTF-8" >> /etc/locale.gen
+echo "en_GB.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen
-echo "LANG=en_UK.UTF-8" >> /etc/locale.conf
+echo "LANG=en_GB.UTF-8" >> /etc/locale.conf
 
 echo "think its done gng"
 sleep 1

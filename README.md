@@ -14,27 +14,27 @@ pacman -Sy git
 -------------
 -------------
 
-git clone https://github.com/xephyr-h4tagSh/goofy-archinstallation-script/
+git clone https://github.com/xephyr-h4tagSh/xephyr-archinstaller/
 
 (downloads this github repository using git)
 
 -------------
 -------------
 
-cd goofy-archinstallation-script
+cd xephyr-archinstaller
 
 (changes the directory to the repository)
 
 -------------
 -------------
 
-chmod +x arch_installation.sh
+chmod +x installer.sh
 
 (makes the installation script executable)
 
 -------------
 -------------
 
-./arch_installation.sh
+./installer.sh
 
 (runs the script)

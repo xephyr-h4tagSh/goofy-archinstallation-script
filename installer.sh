@@ -1,7 +1,6 @@
 #!/bin/bash
-# Arch Install Script - Robust Edition
 
-set -e # Exit immediately if any command fails
+set -e
 
 echo "starting arch install gng..."
 sleep 1

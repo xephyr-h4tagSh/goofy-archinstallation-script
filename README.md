@@ -1,4 +1,4 @@
-# goofy-archinstallation-script
+# my-arch-installation-script: xephyr-archinstaller
 oh dear use my bad arch installation script
 this script is an installation script to install ArchLinux inside of its .iso environment.
 

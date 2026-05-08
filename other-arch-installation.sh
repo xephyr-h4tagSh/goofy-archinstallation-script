@@ -1,4 +1,3 @@
-```bash
 #!/bin/bash
 # ok here we go chat arch install script
 

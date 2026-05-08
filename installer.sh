@@ -45,7 +45,7 @@ sleep 2 # Give the kernel time to breathe
 
 # Detect partition names
 P_PREFIX=""
-[[ "$DISK" == *nvme* ]] && P_PREFIX="p"
+[[ "$DISK" == *nvme* || "$DISK" == *mmcblk* ]] && P_PREFIX="p"
 
 if [ "$SYSTEMTYPE" == "B" ]; then
     SWAP_PART="${DISK}${P_PREFIX}1"

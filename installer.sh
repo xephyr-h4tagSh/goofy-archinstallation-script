@@ -75,7 +75,7 @@ if [ "$SYSTEMTYPE" == "U" ]; then
 fi
 
 # Install Base System
-pacstrap -K /mnt base linux-lts linux-lts-headers linux-firmware grub networkmanager nano
+pacstrap -K /mnt base linux-lts linux-lts-headers linux-firmware grub networkmanager nano sudo sof-firmware alsa-ucm-conf
 [[ "$SYSTEMTYPE" == "U" ]] && pacstrap -K /mnt efibootmgr
 
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -99,11 +99,12 @@ echo "LANG=en_GB.UTF-8" > /etc/locale.conf
 systemctl enable NetworkManager
 
 if [ "$SYSTEMTYPE" == "U" ]; then
-    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --removable
 else
     grub-install --target=i386-pc "$DISK"
 fi
 grub-mkconfig -o /boot/grub/grub.cfg
+echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/10-installer
 EOF
 
 echo "installation finished :0000! unmounting..."

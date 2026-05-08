@@ -1,10 +1,10 @@
 #!/bin/bash
-# Arch Install Script - Fixed Gang Edition
+# Arch Install Script - Robust Edition
 
-echo "starting arch install gang"
+set -e # Exit immediately if any command fails
+
+echo "Starting Arch install gang..."
 sleep 1
-echo "WARNING: This will erase your disk. Use only in the Arch live environment."
-sleep 2
 
 lsblk
 echo ""
@@ -17,9 +17,9 @@ if [ -b "$DISK" ]; then
         exit 1
     fi
     
-    # Clean disk
+    # Clean disk properly
     wipefs -af "$DISK"
-    dd if=/dev/zero of="$DISK" bs=1M count=100 conv=fdatasync
+    sgdisk --zap-all "$DISK"
     partprobe "$DISK"
 else
     echo "Invalid disk. Aborting."
@@ -27,30 +27,23 @@ else
 fi
 
 read -p "BIOS or UEFI? (B/U): " SYSTEMTYPE
-SYSTEMTYPE=${SYSTEMTYPE^^} # Convert to uppercase
+SYSTEMTYPE=${SYSTEMTYPE^^}
 
-# Partitioning logic
+# Partitioning
 if [ "$SYSTEMTYPE" == "B" ]; then
-    # BIOS: 2G Swap, remaining Root
-    sfdisk "$DISK" <<EOF
-label: dos
-size=2G, type=82
-type=83, bootable
-EOF
-elif [ "$SYSTEMTYPE" == "U" ]; then
-    # UEFI: 1G EFI, 2G Swap, remaining Root
-    sfdisk "$DISK" <<EOF
-label: gpt
-size=1G, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-size=2G, type=0657FD6D-A4AB-43C4-84E5-0933C84B4F4F
-type=0FC63DAF-8483-4772-8E79-3D69D8477DE4
-EOF
+    echo "Partitioning for BIOS..."
+    # 2G Swap, Rest Root
+    printf "label: dos\n, 2G, S\n, , L, *\n" | sfdisk "$DISK"
 else
-    echo "Invalid type. Use B or U."
-    exit 1
+    echo "Partitioning for UEFI..."
+    # 1G EFI, 2G Swap, Rest Root
+    printf "label: gpt\n, 1G, U\n, 2G, S\n, , L\n" | sfdisk "$DISK"
 fi
 
-# Detect partition names (handles nvme "p1" vs sda "1")
+partprobe "$DISK"
+sleep 2 # Give the kernel time to breathe
+
+# Detect partition names
 P_PREFIX=""
 [[ "$DISK" == *nvme* ]] && P_PREFIX="p"
 
@@ -63,11 +56,17 @@ else
     ROOT_PART="${DISK}${P_PREFIX}3"
 fi
 
-# Formatting
+# Formatting and CRITICAL MOUNT CHECK
 mkswap "$SWAP_PART"
 swapon "$SWAP_PART"
 mkfs.ext4 -F "$ROOT_PART"
 mount "$ROOT_PART" /mnt
+
+# Check if mount actually worked
+if ! mountpoint -q /mnt; then
+    echo "ERROR: /mnt is not a mountpoint! Check your disk."
+    exit 1
+fi
 
 if [ "$SYSTEMTYPE" == "U" ]; then
     mkfs.fat -F 32 "$EFI_PART"
@@ -75,19 +74,18 @@ if [ "$SYSTEMTYPE" == "U" ]; then
     mount "$EFI_PART" /mnt/boot/efi
 fi
 
-# Essential packages
+# Install Base System
 pacstrap -K /mnt base linux-zen linux-firmware grub networkmanager nano
 [[ "$SYSTEMTYPE" == "U" ]] && pacstrap -K /mnt efibootmgr
 
-# Generate fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 
-# Capture user info BEFORE chroot (heredocs block interactive 'read')
+# Get info before entering chroot
 read -p "Set root password: " PASSWD
 read -p "New username: " USERNAME
 read -p "Set password for $USERNAME: " USRPASSWD
 
-# Configure system inside chroot
+# Config inside chroot
 arch-chroot /mnt /bin/bash <<EOF
 echo "root:$PASSWD" | chpasswd
 useradd -m -G wheel "$USERNAME"
@@ -108,6 +106,6 @@ fi
 grub-mkconfig -o /boot/grub/grub.cfg
 EOF
 
-echo "Installation complete! Unmounting and rebooting..."
+echo "Install finished. Unmounting..."
 umount -R /mnt
-reboot
+echo "Done! Type 'reboot' to start your new system."
